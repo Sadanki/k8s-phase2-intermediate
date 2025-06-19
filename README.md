@@ -9,14 +9,19 @@
 Welcome to **Phase 2** of your Kubernetes journey! This phase covers intermediate-level features like **liveness/readiness probes**, **volumes**, **resource limits**, **PVCs**, and **ConfigMaps**.
 
 ---
-
 ## 📁 Folder Structure
 
-```
-
-<pre> ``` k8s-phase2-intermediate/ ├── configmap.yaml # Define WELCOME_MSG as ConfigMap ├── emptydir-volume.yaml # Shared volume using emptyDir ├── index.html # Custom HTML file served via Nginx ├── NOTES.md # Deep notes and explanations ├── probes-deployment.yaml # Liveness & Readiness probes ├── pvc-volume.yaml # PersistentVolumeClaim demo ├── README.md # You are here ├── resource-limits.yaml # CPU/Memory constraints └── service.yaml # NodePort service for access ``` </pre>
-
-````
+```bash
+k8s-phase2-intermediate/
+├── configmap.yaml             # Define WELCOME_MSG as ConfigMap
+├── emptydir-volume.yaml       # Shared volume using emptyDir
+├── index.html                 # Custom HTML file served via Nginx
+├── NOTES.md                   # Deep notes and explanations
+├── probes-deployment.yaml     # Liveness & Readiness probes
+├── pvc-volume.yaml            # PersistentVolumeClaim demo
+├── README.md                  # You are here
+├── resource-limits.yaml       # CPU/Memory constraints
+└── service.yaml               # NodePort service for access
 
 ---
 
