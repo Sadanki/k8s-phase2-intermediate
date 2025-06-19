@@ -1,0 +1,50 @@
+# API version - For Pod resources we use the core v1 API
+apiVersion: v1
+
+# Type of Kubernetes resource we're creating
+kind: Pod
+
+# Metadata section - identifies our Pod
+metadata:
+  name: emptydir-demo  # Name of this Pod
+  # Note: We could add labels here like: labels: {app: volume-demo}
+
+# Specification of the Pod's desired state
+spec:
+  # Containers section - lists all containers in the Pod
+  containers:
+    # First container - writes data
+    - name: writer       # Container name (must be unique within Pod)
+      image: busybox     # Official lightweight Linux image
+      # Command that runs when container starts:
+      command: ["sh", "-c", "echo 'Hello from writer' > /data/hello.txt && sleep 3600"]
+      # ^-- This means:
+      # 1. Write message to /data/hello.txt
+      # 2. Sleep for 1 hour (keeps container running)
+      
+      # Volume mounts for this container:
+      volumeMounts:
+        - name: shared-data  # Must match volume name below
+          mountPath: /data   # Where volume appears in container
+          # ^-- This makes the emptyDir volume available at /data
+
+    # Second container - reads data
+    - name: reader       # Container name
+      image: busybox     # Same image as writer
+      command: ["sh", "-c", "cat /data/hello.txt && sleep 3600"]
+      # ^-- This:
+      # 1. Prints contents of /data/hello.txt
+      # 2. Sleeps to keep container running
+      
+      volumeMounts:
+        - name: shared-data  # Same volume as writer
+          mountPath: /data   # Same mount path (but could be different)
+
+  # Volumes section - defines storage available to the Pod
+  volumes:
+    - name: shared-data  # Name referenced in volumeMounts
+      emptyDir: {}       # Temporary directory that starts empty
+      # ^-- Key properties:
+      # - Shared between all containers in Pod
+      # - Lives only as long as Pod exists
+      # - Can add sizeLimit in MiB/GiB if needed

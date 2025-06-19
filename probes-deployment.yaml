@@ -1,0 +1,53 @@
+# API version - Different Kubernetes resources use different API versions
+# For Deployments, we typically use apps/v1
+apiVersion: apps/v1
+
+# Type of Kubernetes resource we're creating
+kind: Deployment
+
+# Metadata section - identifies our Deployment
+metadata:
+  name: probe-demo       # Name of this Deployment
+  labels:                # Labels for selecting/organizing resources
+    app: probe-demo      # Key-value pair label
+
+# Specification of the Deployment's desired state
+spec:
+  replicas: 1  # Number of identical Pods to maintain (1 in this case)
+  
+  # Label selector - tells the Deployment which Pods to manage
+  selector:
+    matchLabels:
+      app: probe-demo  # Must match the Pod template's labels below
+
+  # Template for creating new Pods
+  template:
+    metadata:
+      labels:          # Labels applied to each Pod
+        app: probe-demo  # Must match the selector above
+    
+    # Pod specification
+    spec:
+      containers:
+      - name: app-container  # Name of the container within the Pod
+        image: custom-nginx:v1        # Docker image to use
+        ports:               # Network ports to expose
+        - containerPort: 80  # Port the container listens on
+
+        # Liveness Probe - checks if container is running properly
+        livenessProbe:
+          httpGet:           # Checks by making HTTP GET request
+            path: /         # URI path to check
+            port: 80        # Port to use for the check
+          initialDelaySeconds: 10  # Wait 10 sec after startup before first check
+          periodSeconds: 5         # Perform check every 5 seconds
+          # If this fails, Kubernetes will restart the container
+
+        # Readiness Probe - checks if container is ready to serve traffic
+        readinessProbe:
+          httpGet:           # Also uses HTTP GET
+            path: /         # Same path as liveness
+            port: 80        # Same port
+          initialDelaySeconds: 5  # Shorter initial delay (5 sec vs 10)
+          periodSeconds: 5        # Check every 5 seconds
+          # If this fails, Kubernetes stops sending traffic but doesn't restart
